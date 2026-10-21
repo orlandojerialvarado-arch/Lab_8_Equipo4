@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRAZA-AGRO | Trazabilidad Agrícola e IoT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>🌱 TRAZA-AGRO</h1>
+      <p>Sistema Descentralizado de Trazabilidad Agrícola e Integración IoT (Lab 8)</p>
+    </header>
+
+    <!-- Panel de Conexión de Billetera -->
+    <section class="card">
+      <div class="header-card">
+        <h2>Conexión de Billetera</h2>
+        <button id="btnConnect" class="btn-primary">Conectar MetaMask</button>
+      </div>
+      <div class="wallet-info">
+        <p id="wallet"><strong>Billetera:</strong> No conectada</p>
+        <p id="network"><strong>Red:</strong> Desconocida</p>
+        <p id="role"><strong>Rol:</strong> Desconocido</p>
+      </div>
+      <div id="status" class="status-box">Listo para conectar.</div>
+    </section>
+
+    <div class="grid-layout">
+      <!-- 1. Registrar Producto (TC01 / TC02) -->
+      <section class="card">
+        <h2>1. Registrar Producto</h2>
+        <p class="subtitle">Solo administradores y operadores autorizados</p>
+        <div class="form-group">
+          <label>Código del Producto</label>
+          <input id="codigoReg" placeholder="Ej: P001" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <input id="descripcionReg" placeholder="Ej: Café Orgánico de Exportación" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Origen</label>
+          <input id="origenReg" placeholder="Ej: Valle de Quillabamba, Cusco" autocomplete="off">
+        </div>
+        <button id="btnRegistrar" class="btn-action">Registrar en Cadena</button>
+      </section>
+
+      <!-- 2. Actualizar Estado (TC04 / TC06 / TC08) -->
+      <section class="card">
+        <h2>2. Actualizar Estado de Envío</h2>
+        <p class="subtitle">Transición de estados en la cadena de suministro</p>
+        <div class="form-group">
+          <label>Código del Producto</label>
+          <input id="codigoEstado" placeholder="Ej: P001" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Nuevo Estado</label>
+          <select id="selectEstado">
+            <option value="0">0 - REGISTRADO</option>
+            <option value="1">1 - TRANSPORTADO</option>
+            <option value="2">2 - RECIBIDO</option>
+            <option value="3">3 - RECHAZADO</option>
+          </select>
+        </div>
+        <button id="btnActualizarEstado" class="btn-action">Actualizar Estado</button>
+      </section>
+    </div>
+
+    <div class="grid-layout">
+      <!-- 3. Registrar Lectura IoT (TC07) -->
+      <section class="card">
+        <h2>3. Registrar Dato Sensor IoT</h2>
+        <p class="subtitle">Datos de temperatura y telemetría de transporte</p>
+        <div class="form-group">
+          <label>Código del Producto</label>
+          <input id="codigoIoT" placeholder="Ej: P001" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Temperatura (°C)</label>
+          <input id="tempIoT" type="number" step="0.1" placeholder="Ej: 21.5" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Fuente / ID de Sensor</label>
+          <input id="fuenteIoT" placeholder="Ej: DHT22_CONTAINER_04" autocomplete="off">
+        </div>
+        <button id="btnRegistrarIoT" class="btn-action">Registrar Telemetría</button>
+      </section>
+
+      <!-- 4. Gestión de Operadores (Reto de Roles) -->
+      <section class="card">
+        <h2>4. Gestión de Operadores</h2>
+        <p class="subtitle">Exclusivo para el Owner (Control de Acceso Dinámico)</p>
+        <div class="form-group">
+          <label>Dirección del Operador (0x...)</label>
+          <input id="operadorAddress" placeholder="0x..." autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Estado del Permiso</label>
+          <select id="operadorActivo">
+            <option value="true">Autorizar Operador (true)</option>
+            <option value="false">Revocar Operador (false)</option>
+          </select>
+        </div>
+        <button id="btnAsignarOperador" class="btn-action btn-secondary">Actualizar Permiso</button>
+      </section>
+    </div>
+    
+    <!-- 5. Consultar Trazabilidad (TC03 / TC05) -->
+    <section class="card">
+      <h2>5. Consultar Trazabilidad Completa</h2>
+      <div class="search-bar">
+        <input id="codigoConsulta" placeholder="Ingrese código del producto (ej: P001)" autocomplete="off">
+        <button id="btnConsultar" class="btn-primary">Consultar</button>
+      </div>
+
+      <div id="resultadoContainer" class="resultado-box hidden">
+        <div class="info-grid">
+          <div><strong>Código:</strong> <span id="resCodigo">-</span></div>
+          <div><strong>Estado:</strong> <span id="resEstado" class="badge">-</span></div>
+          <div><strong>Descripción:</strong> <span id="resDesc">-</span></div>
+          <div><strong>Origen:</strong> <span id="resOrigen">-</span></div>
+          <div><strong>Responsable:</strong> <span id="resResponsable" class="mono">-</span></div>
+          <div><strong>Fecha Registro:</strong> <span id="resFecha">-</span></div>
+        </div>
+        <hr>
+        <h3>Telemetría de Sensor IoT Asociada</h3>
+        <div class="info-grid iot-grid">
+          <div><strong>Temperatura:</strong> <span id="resTemp">-</span></div>
+          <div><strong>Fuente Sensor:</strong> <span id="resFuente">-</span></div>
+          <div><strong>Operador Sensor:</strong> <span id="resOpSensor" class="mono">-</span></div>
+          <div><strong>Fecha Lectura:</strong> <span id="resFechaIoT">-</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js"></script>
+  <script src="contract-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
